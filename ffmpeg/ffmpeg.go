@@ -6,15 +6,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/allentom/transcoder"
+	"github.com/allentom/transcoder/utils"
 	"io"
 	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/floostack/transcoder"
-	"github.com/floostack/transcoder/utils"
 )
 
 var (
