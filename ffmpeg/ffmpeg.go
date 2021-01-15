@@ -17,6 +17,12 @@ import (
 	"github.com/floostack/transcoder/utils"
 )
 
+var (
+	SignalInterrupt = ProcessSignal{}
+)
+
+type ProcessSignal struct{}
+
 // Transcoder ...
 type Transcoder struct {
 	config           *Config
@@ -28,11 +34,15 @@ type Transcoder struct {
 	outputPipeReader *io.ReadCloser
 	inputPipeWriter  *io.WriteCloser
 	outputPipeWriter *io.WriteCloser
+	InterruptChan    chan struct{}
 }
 
 // New ...
 func New(cfg *Config) transcoder.Transcoder {
-	return &Transcoder{config: cfg}
+	return &Transcoder{
+		config:        cfg,
+		InterruptChan: make(chan struct{}),
+	}
 }
 
 // Start ...
@@ -101,6 +111,15 @@ func (t *Transcoder) Start(opts transcoder.Options) (<-chan transcoder.Progress,
 	if err != nil {
 		return nil, fmt.Errorf("Failed starting transcoding (%s) with args (%s) with error %s", t.config.FfmpegBinPath, args, err)
 	}
+	go func() {
+		select {
+		case <-t.InterruptChan:
+			err = cmd.Process.Kill()
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+	}()
 
 	if t.config.ProgressEnabled && !t.config.Verbose {
 		go func() {
@@ -116,6 +135,10 @@ func (t *Transcoder) Start(opts transcoder.Options) (<-chan transcoder.Progress,
 	}
 
 	return out, nil
+}
+
+func (t *Transcoder) Stop() {
+	t.InterruptChan <- SignalInterrupt
 }
 
 // Input ...
@@ -192,7 +215,7 @@ func (t *Transcoder) validate() error {
 }
 
 // GetMetadata Returns metadata for the specified input file
-func (t *Transcoder) GetMetadata() ( transcoder.Metadata, error) {
+func (t *Transcoder) GetMetadata() (transcoder.Metadata, error) {
 
 	if t.config.FfprobeBinPath != "" {
 		var outb, errb bytes.Buffer

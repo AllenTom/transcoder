@@ -14,4 +14,5 @@ type Transcoder interface {
 	WithOptions(opts Options) Transcoder
 	WithAdditionalOptions(opts Options) Transcoder
 	GetMetadata() (Metadata, error)
+	Stop()
 }
