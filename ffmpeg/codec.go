@@ -22,8 +22,8 @@ type Codec struct {
 	Desc  string
 }
 
-func ReadCodecList() ([]Codec, error) {
-	cmd := exec.Command("ffmpeg", "-codecs")
+func ReadCodecList(config *Config) ([]Codec, error) {
+	cmd := exec.Command(config.FfmpegBinPath, "-codecs")
 	outputByte, err := cmd.Output()
 	if err != nil {
 		return nil, err

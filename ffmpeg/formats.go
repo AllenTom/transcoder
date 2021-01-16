@@ -16,8 +16,8 @@ type SupportFormat struct {
 	Desc  string
 }
 
-func GetFormats() ([]SupportFormat, error) {
-	cmd := exec.Command("ffmpeg", "-formats")
+func GetFormats(config *Config) ([]SupportFormat, error) {
+	cmd := exec.Command(config.FfmpegBinPath, "-formats")
 	outputByte, err := cmd.Output()
 	if err != nil {
 		return nil, err

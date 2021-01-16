@@ -21,8 +21,8 @@ type Encoder struct {
 	Desc  string
 }
 
-func ReadEncoderList() ([]Encoder, error) {
-	cmd := exec.Command("ffmpeg", "-encoders")
+func ReadEncoderList(config *Config) ([]Encoder, error) {
+	cmd := exec.Command(config.FfmpegBinPath, "-encoders")
 	outputByte, err := cmd.Output()
 	if err != nil {
 		return nil, err
