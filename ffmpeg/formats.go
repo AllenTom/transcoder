@@ -70,7 +70,7 @@ func GetFormats(config *Config) ([]SupportFormat, error) {
 			fmt.Println(format)
 			formats = append(formats, format)
 		}
-		if line == " --" {
+		if strings.TrimSpace(line) == "--" {
 			startFlag = true
 		}
 	}

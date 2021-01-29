@@ -80,7 +80,7 @@ func ReadCodecList(config *Config) ([]Codec, error) {
 			}
 			codecList = append(codecList, codec)
 		}
-		if line == " -------" {
+		if strings.TrimSpace(line) == "-------" {
 			startFlag = true
 		}
 	}

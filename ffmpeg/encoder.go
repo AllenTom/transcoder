@@ -79,7 +79,7 @@ func ReadEncoderList(config *Config) ([]Encoder, error) {
 			}
 			encoderList = append(encoderList, encoder)
 		}
-		if line == "------" {
+		if strings.TrimSpace(line) == "------" {
 			startFlag = true
 		}
 	}
