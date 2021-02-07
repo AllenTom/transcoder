@@ -1,7 +1,6 @@
 package ffmpeg
 
 import (
-	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -44,6 +43,9 @@ func GetFormats(config *Config) ([]SupportFormat, error) {
 				break
 			}
 			line = strings.TrimSpace(line)
+			if strings.HasPrefix(line, "D ") {
+				line = strings.Replace(line, "D ", "D", 1)
+			}
 			for idx, part := range strings.SplitN(line, " ", 3) {
 				part = strings.TrimSpace(part)
 				if idx == 0 {
@@ -67,7 +69,6 @@ func GetFormats(config *Config) ([]SupportFormat, error) {
 					format.Desc = part
 				}
 			}
-			fmt.Println(format)
 			formats = append(formats, format)
 		}
 		if strings.TrimSpace(line) == "--" {
