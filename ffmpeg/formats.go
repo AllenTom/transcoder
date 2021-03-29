@@ -30,17 +30,13 @@ func GetFormats(config *Config) ([]SupportFormat, error) {
 		if startFlag && len(line) > 0 {
 			flagText := line[:3]
 			flagText = strings.TrimSpace(flagText)
-			switch flagText {
-			case "D":
+			if strings.HasPrefix(flagText, "D") {
 				format.Flags.Demuxing = true
-				break
-			case "E":
+			} else if strings.HasPrefix(flagText, "E") {
 				format.Flags.Muxing = true
-				break
-			case "DE":
+			} else if strings.HasPrefix(flagText, "DE") {
 				format.Flags.Muxing = true
 				format.Flags.Demuxing = true
-				break
 			}
 			line = strings.TrimSpace(line)
 			if strings.HasPrefix(line, "D ") {
